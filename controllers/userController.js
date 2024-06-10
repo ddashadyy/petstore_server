@@ -2,7 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const prisma = new PrismaClient();
-const path = require("path");
 const uuid = require("uuid");
 
 const generateJWT = (id) => {
@@ -11,8 +10,7 @@ const generateJWT = (id) => {
 
 class UserController {
   async registration(req, res) {
-    const { email, password, username, favoriteGames, role } = req.body;
-    const { avatar } = req.files;
+    const { email, password, username, role } = req.body;
     const candidate = await prisma.user.findUnique({
       where: {
         email: email,
@@ -29,8 +27,7 @@ class UserController {
           username: username,
           email: email,
           password: hashPassword,
-          role: role,
-          avatar: `http://92.53.105.185:5000/avatars/${fileName}`,
+          role: role
         },
       });
       const token = generateJWT(user.id, user.email);
